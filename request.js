@@ -1128,6 +1128,7 @@ Request.prototype.onResponse = function (response) {
         if (self._json) {
           try {
             response.body = JSON.parse(response.body)
+            response.json = true
           } catch (e) {}
         }
         debug('emitting complete', self.uri.href)

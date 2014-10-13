@@ -21,6 +21,11 @@ function addTest(name, data) {
       if (data.expectBody && Buffer.isBuffer(data.expectBody)) {
         t.deepEqual(data.expectBody.toString(), body.toString())
       }
+      if(Object.keys(data.expectResponse || {}).length > 0) {
+        Object.keys(data.expectResponse).forEach(function(key) {
+          t.equal(data.expectResponse[key], resp[key])
+        })
+      }
       t.end()
     })
   })
@@ -67,6 +72,18 @@ addTest('testGetJSON', {
    resp : server.createGetResponse('{"test":true}', 'application/json')
  , json : true
  , expectBody: {"test":true}
+ , expectResponse: {
+    json: true
+ }
+})
+
+addTest('testGetJSONError', {
+    resp: server.createGetResponse('this is not json', 'application/json')
+  , json: true
+  , expectBody: 'this is not json'
+  , expectResponse: {
+      json: undefined
+  }
 })
 
 addTest('testPutString', {
